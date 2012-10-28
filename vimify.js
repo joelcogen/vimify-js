@@ -140,11 +140,12 @@ vimify.loadToFirstOrLast = function() {
   }
 };
 
-vimify.j = function() {
+vimify.j = function(e) {
   var link, next;
   if (!vimify.hasManyItems()) {
     return;
   }
+  e.preventDefault();
   next = vimify.nextItem();
   if (next.length > 0) {
     return $(window).scrollTop(next.offset().top);
@@ -158,11 +159,12 @@ vimify.j = function() {
   }
 };
 
-vimify.k = function() {
+vimify.k = function(e) {
   var link, prev;
   if (!vimify.hasManyItems()) {
     return;
   }
+  e.preventDefault();
   prev = vimify.previousItem();
   if (prev && prev.length > 0) {
     return $(window).scrollTop(prev.offset().top);
@@ -176,11 +178,12 @@ vimify.k = function() {
   }
 };
 
-vimify.o = function() {
+vimify.o = function(e) {
   var link;
   if (!vimify.hasManyItems()) {
     return;
   }
+  e.preventDefault();
   link = vimify.currentItem().find(vimify.selectors.itemLink);
   return window.location = link.attr("href");
 };
