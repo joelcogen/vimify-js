@@ -6,12 +6,27 @@ vimify.init = function(opts) {
     opts = {};
   }
   vimify.selectors = {};
+  vimify.registeredKeys = {};
   vimify.initJko(opts);
   vimify.initComment(opts);
   vimify.initSearch(opts);
-  if (!(opts["help"] === false)) {
-    return console.log("Help: not yet implemented");
-  }
+  return vimify.initHelp(opts);
+};
+
+vimify.register = function(key, fn, help) {
+  vimify.registeredKeys[key] = {
+    keys: [key],
+    fn: fn,
+    help: help
+  };
+  return keypress.combo(key, fn);
+};
+
+vimify.registerAlias = function(aliasKey, realKey) {
+  var keyData;
+  keyData = vimify.registeredKeys[realKey];
+  keyData.keys.push(aliasKey);
+  return keypress.combo(aliasKey, keyData.fn);
 };
 
 vimify.hasManyItems = function() {
@@ -55,22 +70,77 @@ vimify.c = function() {
 };
 
 
+vimify.initHelp = function(opts) {
+  if (opts["help"] === false) {
+    return;
+  }
+  keypress.combo("h", vimify.h);
+  if (opts["advancedKeys"]) {
+    return keypress.combo("?", vimify.h);
+  }
+};
+
+vimify.h = function() {
+  if ($(".vimify-help").length > 0) {
+    vimify.closeHelp();
+    return;
+  }
+  $("body").append("<div class=\"vimify-help-backdrop\"></div>");
+  $("body").append(vimify.buildHelp());
+  return keypress.combo("escape", vimify.closeHelp);
+};
+
+vimify.closeHelp = function() {
+  $(".vimify-help, .vimify-help-backdrop").remove();
+  return keypress.unregister_combo({
+    keys: "escape"
+  });
+};
+
+vimify.buildHelp = function() {
+  var entry, helpDiv, replacements, _, _ref;
+  replacements = {
+    down: "▼",
+    up: "▲",
+    enter: "⏎"
+  };
+  helpDiv = "<div class=\"vimify-help\">";
+  helpDiv += "<div class=\"vimify-help-entry .vimify-help-title\">Keyboard shortcuts</div>";
+  _ref = vimify.registeredKeys;
+  for (_ in _ref) {
+    entry = _ref[_];
+    helpDiv += "<div class=\"vimify-help-entry\">";
+    helpDiv += entry.keys.map(function(key) {
+      if (replacements[key] != null) {
+        key = replacements[key];
+      }
+      return "<div class=\"vimify-help-key\">" + key + "</div>";
+    }).reduce(function(a, b) {
+      return "" + a + " / " + b;
+    });
+    helpDiv += "<div class=\"vimify-help-message\">" + entry.help + "</div>";
+    helpDiv += "</div>";
+  }
+  return helpDiv += "</div>";
+};
+
+
 vimify.initJko = function(opts) {
   if (opts["item"]) {
     vimify.selectors.item = opts["item"];
     vimify.selectors.nextPage = opts["nextPage"];
     vimify.selectors.prevPage = opts["prevPage"];
-    keypress.combo("j", vimify.j);
-    keypress.combo("k", vimify.k);
+    vimify.register("j", vimify.j, "Next item");
+    vimify.register("k", vimify.k, "Previous item");
     if (opts["simpleKeys"]) {
-      keypress.combo("down", vimify.j);
-      keypress.combo("up", vimify.k);
+      vimify.registerAlias("down", "j");
+      vimify.registerAlias("up", "k");
     }
     if (opts["itemLink"]) {
       vimify.selectors.itemLink = opts["itemLink"];
-      keypress.combo("o", vimify.o);
+      vimify.register("o", vimify.o, "Open item");
       if (opts["simpleKeys"]) {
-        keypress.combo("enter", vimify.o);
+        vimify.registerAlias("enter", "o");
       }
     }
     return vimify.loadToFirstOrLast();
@@ -131,7 +201,7 @@ vimify.prevPageLink = function() {
 vimify.loadToFirstOrLast = function() {
   if (window.location.hash === "#first") {
     return $(window).load(function() {
-      return vimify.j();
+      return $(window).scrollTop($(vimify.selectors.item).first().offset().top);
     });
   } else if (window.location.hash === "#last") {
     return $(window).load(function() {

@@ -1,0 +1,58 @@
+.vimify-help-backdrop
+  width: 100%
+  height: 100%
+  position: fixed
+  top: 0
+  left: 0
+  z-index: 1040
+  background: #000
+  opacity: 0.8
+  filter: alpha(opacity=80)
+  margin: 0
+  padding: 0
+
+.vimify-help
+  position: fixed
+  top: 0
+  left: 0
+  color: #ccc
+  z-index: 1050
+  width: 100%
+  margin: 0
+  margin-top: 50px
+  padding: 0
+
+  .vimify-help-entry
+    width: 200px
+    margin: 8px auto
+    font-family: Helvetica, arial, sans-serif
+    vertical-align: middle
+    font-size: 14px
+    line-height: 26px
+    &.vimify-help-title
+      font-weight: bold
+
+    .vimify-help-key
+      display: inline-block
+      width: 26px
+      height: 26px
+      border: 1px solid #aaa
+      vertical-align: top
+      color: #333
+      text-align: center
+      text-transform: uppercase
+      -webkit-border-radius: 5px
+      -moz-border-radius: 5px
+      border-radius: 5px
+      -webkit-box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.2)
+      -moz-box-shadow: 1px 1px 1px 0 rgba(0,0,0,0.2)
+      box-shadow: 1px 1px 1px 0 rgba(0, 0, 0, 0.2)
+      background: #fff
+      background-image: -moz-linear-gradient(-90deg,white 0%,#E3E3E3 100%)
+      background-image: -webkit-linear-gradient(-90deg,white 0%,#E3E3E3 100%)
+      background-image: -o-linear-gradient(-90deg,white 0%,#E3E3E3 100%)
+      background-image: -ms-linear-gradient(-90deg,white 0%,#E3E3E3 100%)
+      background-image: linear-gradient(-90deg,white 0%,#E3E3E3 100%)
+    .vimify-help-message
+      display: inline-block
+      margin-left: 12px

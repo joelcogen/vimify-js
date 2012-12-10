@@ -14,12 +14,21 @@ window.vimify = {}
 # help: enable help (h), true by default
 vimify.init = (opts = {}) ->
   vimify.selectors = {}
+  vimify.registeredKeys = {}
+
   vimify.initJko opts
   vimify.initComment opts
   vimify.initSearch opts
+  vimify.initHelp opts
 
-  if !(opts["help"] == false)
-    console.log "Help: not yet implemented"
+vimify.register = (key, fn, help) ->
+  vimify.registeredKeys[key] = { keys: [key], fn: fn, help: help }
+  keypress.combo key, fn
+
+vimify.registerAlias = (aliasKey, realKey) ->
+  keyData = vimify.registeredKeys[realKey]
+  keyData.keys.push aliasKey
+  keypress.combo aliasKey, keyData.fn
 
 vimify.hasManyItems = ->
   $(vimify.selectors.item).length > 1

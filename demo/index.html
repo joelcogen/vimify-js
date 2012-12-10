@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>vimify.js demo</title>
+    <link href="../dist/vimify.min.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+    Lorem ipsum
+
+    <script type="text/javascript" src="jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="../dist/vimify_full.min.js"></script>
+    <script type="text/javascript">
+      vimify.init({
+        item: 'article',
+        itemLink: 'h1 a',
+        prevPage: ".prev",
+        nextPage: ".next",
+        comment: ".dsq-textarea-wrapper",
+        simpleKeys: true,
+        advancedKeys: true,
+      });
+    </script>
+  </body>
+</html>

@@ -3,16 +3,16 @@ vimify.initJko = (opts) ->
     vimify.selectors.item = opts["item"]
     vimify.selectors.nextPage = opts["nextPage"]
     vimify.selectors.prevPage = opts["prevPage"]
-    keypress.combo "j", vimify.j
-    keypress.combo "k", vimify.k
+    vimify.register "j", vimify.j, "Next item"
+    vimify.register "k", vimify.k, "Previous item"
     if opts["simpleKeys"]
-      keypress.combo "down", vimify.j
-      keypress.combo "up", vimify.k
+      vimify.registerAlias "down", "j"
+      vimify.registerAlias "up", "k"
     if opts["itemLink"]
       vimify.selectors.itemLink = opts["itemLink"]
-      keypress.combo "o", vimify.o
+      vimify.register "o", vimify.o, "Open item"
       if opts["simpleKeys"]
-        keypress.combo "enter", vimify.o
+        vimify.registerAlias "enter", "o"
     # Go to initial position if we come from other page
     vimify.loadToFirstOrLast()
 
@@ -56,7 +56,7 @@ vimify.prevPageLink = ->
 vimify.loadToFirstOrLast = ->
   if window.location.hash == "#first"
     $(window).load ->
-      vimify.j()
+      $(window).scrollTop $(vimify.selectors.item).first().offset().top
   else if window.location.hash == "#last"
     $(window).load ->
       $(window).scrollTop $(vimify.selectors.item).last().offset().top
