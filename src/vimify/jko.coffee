@@ -21,6 +21,10 @@ vimify.currentItem = ->
   current = null
   items = $(vimify.selectors.item).sort (a, b) ->
     $(a).offset().top < $(b).offset().top
+
+  # Already scolled to bottom
+  return items.first() if $(document).height() - $(window).height() == $(window).scrollTop()
+
   items.each (_, item) ->
     item = $(item)
     current ||= item if item.offset().top <= $(window).scrollTop()
@@ -55,10 +59,10 @@ vimify.prevPageLink = ->
 # Helpers
 vimify.loadToFirstOrLast = ->
   if window.location.hash == "#first"
-    $(window).load ->
+    $ ->
       $(window).scrollTop $(vimify.selectors.item).first().offset().top
   else if window.location.hash == "#last"
-    $(window).load ->
+    $ ->
       $(window).scrollTop $(vimify.selectors.item).last().offset().top
 
 # Key functions

@@ -39,14 +39,15 @@ vimify.initComment = function(opts) {
     vimify.selectors.comment = opts["comment"];
     keypress.combo("c", vimify.c);
     if (opts["advancedKeys"]) {
-      return keypress.combo("i", vimify.c);
+      keypress.combo("i", vimify.c);
     }
+    return vimify.loadToComment();
   }
 };
 
 vimify.loadToComment = function() {
   if (window.location.hash === "#comment") {
-    return $(window).load(function() {
+    return $(function() {
       return vimify.focusComment();
     });
   }
@@ -59,7 +60,7 @@ vimify.focusComment = function() {
   return comment.focus();
 };
 
-vimify.c = function() {
+vimify.c = function(e) {
   var link;
   if (vimify.hasManyItems()) {
     link = vimify.currentItem().find(vimify.selectors.itemLink);
@@ -153,6 +154,9 @@ vimify.currentItem = function() {
   items = $(vimify.selectors.item).sort(function(a, b) {
     return $(a).offset().top < $(b).offset().top;
   });
+  if ($(document).height() - $(window).height() === $(window).scrollTop()) {
+    return items.first();
+  }
   items.each(function(_, item) {
     item = $(item);
     if (item.offset().top <= $(window).scrollTop()) {
@@ -200,11 +204,11 @@ vimify.prevPageLink = function() {
 
 vimify.loadToFirstOrLast = function() {
   if (window.location.hash === "#first") {
-    return $(window).load(function() {
+    return $(function() {
       return $(window).scrollTop($(vimify.selectors.item).first().offset().top);
     });
   } else if (window.location.hash === "#last") {
-    return $(window).load(function() {
+    return $(function() {
       return $(window).scrollTop($(vimify.selectors.item).last().offset().top);
     });
   }
