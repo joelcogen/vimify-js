@@ -11,11 +11,6 @@ namespace :compile do
     group("dist/vimify.min.js") do
       add("dist/vimify.js")
     end
-
-    group("dist/vimify_full.min.js") do
-      add("src/Keypress/keypress.js", minify: false)
-      add("dist/vimify.js")
-    end
   end
 
   desc "Compile CSS"

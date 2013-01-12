@@ -66,9 +66,8 @@ vimify.loadToFirstOrLast = ->
       $(window).scrollTop $(vimify.selectors.item).last().offset().top
 
 # Key functions
-vimify.j = (e) ->
+vimify.j = ->
   return unless vimify.hasManyItems()
-  e.preventDefault()
   next = vimify.nextItem()
   if next.length > 0
     $(window).scrollTop next.offset().top
@@ -79,9 +78,8 @@ vimify.j = (e) ->
     else
       $(window).scrollTop $(document).height()
 
-vimify.k = (e) ->
+vimify.k = ->
   return unless vimify.hasManyItems()
-  e.preventDefault()
   prev = vimify.previousItem()
   if prev && prev.length > 0
     $(window).scrollTop prev.offset().top
@@ -92,8 +90,8 @@ vimify.k = (e) ->
     else
       $(window).scrollTop 0
 
-vimify.o = (e) ->
+vimify.o = ->
   return unless vimify.hasManyItems()
-  e.preventDefault()
-  link = vimify.currentItem().find vimify.selectors.itemLink
-  window.location = link.attr "href"
+  if current = vimify.currentItem()
+    link = current.find vimify.selectors.itemLink
+    window.location = link.attr "href"

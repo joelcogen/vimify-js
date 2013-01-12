@@ -23,7 +23,7 @@
     <div class="comments">
       <h3>Comments</h3>
       <textarea id="new-comment"></textarea>
-      <input type="submit">Comment</input>
+      <input type="submit" value="Comment" />
 
       <div class="comment">
         <p>Caramels wypas candy canes lemon drops chupa chups candy canes. Croissant powder jelly beans jelly. Muffin jelly beans apple pie topping jelly beans bear claw.</p>
@@ -43,12 +43,13 @@
     </div>
 
     <script type="text/javascript" src="jquery-1.8.3.min.js"></script>
-    <script type="text/javascript" src="../dist/vimify_full.min.js"></script>
+    <script type="text/javascript" src="../dist/vimify.min.js"></script>
     <script type="text/javascript">
       vimify.init({
         item: 'article',
         itemLink: 'h1 a',
         comment: "#new-comment",
+        search: ".search input",
         simpleKeys: true,
         advancedKeys: true,
       });

@@ -1,3 +1,4 @@
+var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
 window.vimify = {};
 
@@ -10,27 +11,76 @@ vimify.init = function(opts) {
   vimify.initJko(opts);
   vimify.initComment(opts);
   vimify.initSearch(opts);
-  return vimify.initHelp(opts);
+  vimify.initHelp(opts);
+  $(document).keydown(vimify.handleKeydown);
+  return $(document).keyup(vimify.handleKeyup);
 };
 
 vimify.register = function(key, fn, help) {
-  vimify.registeredKeys[key] = {
+  return vimify.registeredKeys[key] = {
     keys: [key],
     fn: fn,
     help: help
   };
-  return keypress.combo(key, fn);
 };
 
 vimify.registerAlias = function(aliasKey, realKey) {
   var keyData;
   keyData = vimify.registeredKeys[realKey];
-  keyData.keys.push(aliasKey);
-  return keypress.combo(aliasKey, keyData.fn);
+  return keyData.keys.push(aliasKey);
+};
+
+vimify.unregister = function(key) {
+  return delete vimify.registeredKeys[key];
 };
 
 vimify.hasManyItems = function() {
   return $(vimify.selectors.item).length > 1;
+};
+
+vimify.handleKeydown = function(e) {
+  if (vimify.findKey(e)) {
+    return e.preventDefault();
+  }
+};
+
+vimify.handleKeyup = function(e) {
+  var fn;
+  if (fn = vimify.findKey(e)) {
+    e.preventDefault();
+    return fn();
+  }
+};
+
+vimify.findKey = function(e) {
+  var entry, key, _, _ref, _ref1;
+  if ((_ref = e.target.tagName) === "INPUT" || _ref === "TEXTAREA") {
+    return false;
+  }
+  key = vimify.charcodes[e.which];
+  _ref1 = vimify.registeredKeys;
+  for (_ in _ref1) {
+    entry = _ref1[_];
+    if (__indexOf.call(entry.keys, key) >= 0) {
+      return entry.fn;
+    }
+  }
+  return false;
+};
+
+vimify.charcodes = {
+  13: "enter",
+  27: "escape",
+  38: "up",
+  40: "down",
+  67: "c",
+  72: "h",
+  73: "i",
+  74: "j",
+  75: "k",
+  79: "o",
+  83: "s",
+  191: "/"
 };
 
 
@@ -75,10 +125,7 @@ vimify.initHelp = function(opts) {
   if (opts["help"] === false) {
     return;
   }
-  vimify.register("h", vimify.h, "Show/hide help");
-  if (opts["advancedKeys"]) {
-    return vimify.registerAlias("?", "h");
-  }
+  return vimify.register("h", vimify.h, "Show/hide help");
 };
 
 vimify.h = function() {
@@ -88,14 +135,12 @@ vimify.h = function() {
   }
   $("body").append("<div class=\"vimify-help-backdrop\"></div>");
   $("body").append(vimify.buildHelp());
-  return keypress.combo("escape", vimify.closeHelp);
+  return vimify.register("escape", vimify.closeHelp);
 };
 
 vimify.closeHelp = function() {
   $(".vimify-help, .vimify-help-backdrop").remove();
-  return keypress.unregister_combo({
-    keys: "escape"
-  });
+  return vimify.unregister("escape");
 };
 
 vimify.buildHelp = function() {
@@ -110,17 +155,19 @@ vimify.buildHelp = function() {
   _ref = vimify.registeredKeys;
   for (_ in _ref) {
     entry = _ref[_];
-    helpDiv += "<div class=\"vimify-help-entry\">";
-    helpDiv += entry.keys.map(function(key) {
-      if (replacements[key] != null) {
-        key = replacements[key];
-      }
-      return "<div class=\"vimify-help-key\">" + key + "</div>";
-    }).reduce(function(a, b) {
-      return "" + a + " / " + b;
-    });
-    helpDiv += "<div class=\"vimify-help-message\">" + entry.help + "</div>";
-    helpDiv += "</div>";
+    if (entry.help != null) {
+      helpDiv += "<div class=\"vimify-help-entry\">";
+      helpDiv += entry.keys.map(function(key) {
+        if (replacements[key] != null) {
+          key = replacements[key];
+        }
+        return "<div class=\"vimify-help-key\">" + key + "</div>";
+      }).reduce(function(a, b) {
+        return "" + a + " / " + b;
+      });
+      helpDiv += "<div class=\"vimify-help-message\">" + entry.help + "</div>";
+      helpDiv += "</div>";
+    }
   }
   return helpDiv += "</div>";
 };
@@ -214,12 +261,11 @@ vimify.loadToFirstOrLast = function() {
   }
 };
 
-vimify.j = function(e) {
+vimify.j = function() {
   var link, next;
   if (!vimify.hasManyItems()) {
     return;
   }
-  e.preventDefault();
   next = vimify.nextItem();
   if (next.length > 0) {
     return $(window).scrollTop(next.offset().top);
@@ -233,12 +279,11 @@ vimify.j = function(e) {
   }
 };
 
-vimify.k = function(e) {
+vimify.k = function() {
   var link, prev;
   if (!vimify.hasManyItems()) {
     return;
   }
-  e.preventDefault();
   prev = vimify.previousItem();
   if (prev && prev.length > 0) {
     return $(window).scrollTop(prev.offset().top);
@@ -252,21 +297,25 @@ vimify.k = function(e) {
   }
 };
 
-vimify.o = function(e) {
-  var link;
+vimify.o = function() {
+  var current, link;
   if (!vimify.hasManyItems()) {
     return;
   }
-  e.preventDefault();
-  link = vimify.currentItem().find(vimify.selectors.itemLink);
-  return window.location = link.attr("href");
+  if (current = vimify.currentItem()) {
+    link = current.find(vimify.selectors.itemLink);
+    return window.location = link.attr("href");
+  }
 };
 
 
 vimify.initSearch = function(opts) {
   if (opts["search"]) {
     vimify.selectors.search = opts["search"];
-    return vimify.register("s", vimify.s, "Search");
+    vimify.register("s", vimify.s, "Search");
+    if (opts["advancedKeys"]) {
+      return vimify.registerAlias("/", "s");
+    }
   }
 };
 
