@@ -37,9 +37,9 @@ vimify.hasManyItems = function() {
 vimify.initComment = function(opts) {
   if (opts["comment"]) {
     vimify.selectors.comment = opts["comment"];
-    keypress.combo("c", vimify.c);
+    vimify.register("c", vimify.c, "Comment");
     if (opts["advancedKeys"]) {
-      keypress.combo("i", vimify.c);
+      vimify.registerAlias("i", "c");
     }
     return vimify.loadToComment();
   }
@@ -75,9 +75,9 @@ vimify.initHelp = function(opts) {
   if (opts["help"] === false) {
     return;
   }
-  keypress.combo("h", vimify.h);
+  vimify.register("h", vimify.h, "Show/hide help");
   if (opts["advancedKeys"]) {
-    return keypress.combo("?", vimify.h);
+    return vimify.registerAlias("?", "h");
   }
 };
 
@@ -266,10 +266,7 @@ vimify.o = function(e) {
 vimify.initSearch = function(opts) {
   if (opts["search"]) {
     vimify.selectors.search = opts["search"];
-    keypress.combo("s", vimify.s);
-    if (opts["advancedKeys"]) {
-      return keypress.combo("/", vimify.s);
-    }
+    return vimify.register("s", vimify.s, "Search");
   }
 };
 

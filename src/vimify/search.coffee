@@ -1,9 +1,9 @@
 vimify.initSearch = (opts) ->
   if opts["search"]
     vimify.selectors.search = opts["search"]
-    keypress.combo "s", vimify.s
+    vimify.register "s", vimify.s, "Search"
     if opts["advancedKeys"]
-      keypress.combo "/", vimify.s
+      vimify.registerAlias "/", "s"
 
 vimify.s = ->
   search = $(vimify.selectors.search)

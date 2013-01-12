@@ -1,9 +1,9 @@
 vimify.initComment = (opts) ->
   if opts["comment"]
     vimify.selectors.comment = opts["comment"]
-    keypress.combo "c", vimify.c
+    vimify.register "c", vimify.c, "Comment"
     if opts["advancedKeys"]
-      keypress.combo "i", vimify.c
+      vimify.registerAlias "i", "c"
     vimify.loadToComment()
 
 vimify.loadToComment = ->

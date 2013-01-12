@@ -1,8 +1,8 @@
 vimify.initHelp = (opts) ->
   return if opts["help"] == false
-  keypress.combo "h", vimify.h
+  vimify.register "h", vimify.h, "Show/hide help"
   if opts["advancedKeys"]
-    keypress.combo "?", vimify.h
+    vimify.registerAlias "?", "h"
 
 vimify.h = ->
   if $(".vimify-help").length > 0
