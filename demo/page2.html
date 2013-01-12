@@ -6,6 +6,10 @@
     <link href="../dist/vimify.min.css" rel="stylesheet" type="text/css">
   </head>
   <body>
+    <div class="search" style="position: absolute; right: 20px;">
+      <input type="text" value="Search" />
+    </div>
+
     <h1>Vimify! (page 2)</h1>
 
     <article>
@@ -44,6 +48,7 @@
         item: 'article',
         itemLink: 'h1 a',
         comment: "#new-comment",
+        search: ".search input",
         simpleKeys: true,
         advancedKeys: true,
       });
